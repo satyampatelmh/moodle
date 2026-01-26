@@ -31,8 +31,11 @@ class User(db.Model):
 # Routes
 @app.route("/")
 def home():
-    if "username" in session:
-        return redirect(url_for('dashboard'))
+    if "username" in session and "user_type" in session:
+        if session["user_type"] == "teacher":
+            return redirect(url_for('teacherDashboard'))
+        elif session["user_type"] == "student":
+            return redirect(url_for('studentDashboard'))
     return render_template("index.html")
 
 
@@ -44,9 +47,18 @@ def login():
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
         session["username"] = username
+        if user.user_type == "teacher":
+            session["user_type"] = "teacher"
+            return redirect(url_for("teacherDashboard"))
+        elif user.user_type == "student":
+            session["user_type"] = "student"
+            return redirect(url_for("studentDashboard"))
         return redirect(url_for("dashboard"))
     else:
         return render_template("index.html")
+    
+
+
         
     
 # Register
@@ -66,17 +78,39 @@ def register():
         return redirect(url_for("dashboard"))
         
 # Dashboard
-@app.route("/dashboard")
-def dashboard():
+@app.route("/studentDashboard")
+def studentDashboard():
     if "username" in session:
-        return render_template("dashboard.html", username=session["username"])
+        return render_template("studentDashboard.html", username=session["username"])
     return redirect(url_for('home'))
 
 # Logout
 @app.route("/logout")
 def logout():
     session.pop("username", None)
+    session.pop("user_type", None)
     return redirect(url_for('home'))
+
+#Teacher Dashboard
+@app.route("/teacherDashboard")
+def teacherDashboard():
+    if "username" in session:
+        return render_template("teacherDashboard.html",username=session["username"])
+    return redirect(url_for('home'))
+    
+
+#Make Quiz
+@app.route("/makeQuiz")
+def makeQuiz():
+    if "username" in session:
+        return render_template("makeQuiz.html",username=session["username"])
+    
+#Grade Quiz
+@app.route("/gradeQuiz")
+def gradeQuiz():
+    if "username" in session:
+        return render_template("gradeQuiz.html",username=session["username"])
+        
 
 
 
