@@ -3,16 +3,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import os
 from dotenv import load_dotenv
-load_dotenv()
-
 
 app = Flask(__name__)
+load_dotenv() # Loading variables from .env
 app.secret_key = os.environ.get("SECRET_KEY")
+
 
 # Configure SQL Alchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
+
 
 # Database Models
 class User(db.Model):
@@ -38,7 +39,6 @@ def home():
             return redirect(url_for('studentDashboard'))
     return render_template("index.html")
 
-
 # Login
 @app.route("/login", methods=["POST"])
 def login():
@@ -56,11 +56,7 @@ def login():
         return redirect(url_for("dashboard"))
     else:
         return render_template("index.html")
-    
 
-
-        
-    
 # Register
 @app.route("/register", methods=["POST"])
 def register():
@@ -75,7 +71,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         session["username"] = username
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("studentDashboard"))
         
 # Dashboard
 @app.route("/studentDashboard")
@@ -98,7 +94,6 @@ def teacherDashboard():
         return render_template("teacherDashboard.html",username=session["username"])
     return redirect(url_for('home'))
     
-
 #Make Quiz
 @app.route("/makeQuiz")
 def makeQuiz():
@@ -111,8 +106,6 @@ def gradeQuiz():
     if "username" in session:
         return render_template("gradeQuiz.html",username=session["username"])
         
-
-
 
 if __name__ == "__main__":
     with app.app_context():
