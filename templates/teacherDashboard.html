@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Welcome teacherDashboard.html</h1>
+<div>
+    <a  href="{{url_for('makeQuiz')}}" type="button" id="makequiz" class="btn btn-primary">Make a Quiz</a>
+
+    <a href="{{url_for('gradeQuiz')}}" type="button" id="gradequiz" class="btn btn-success">Grade a Quiz</a>
+
+
+    <br>
+    <br>
+    <a href="{{url_for('logout')}}">Logout</a>
+</div>
+{% endblock %}
