@@ -19,12 +19,13 @@
 <script>
     function validCredentials() {
         var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-        var usernameRegex = /^[1-9][0-9]{13}$/
+        var usernameRegex = /^[A-Za-z]{3}[A-Za-z0-9._]*[0-9]*$/
+
         var username = document.getElementById("username").value
         var password = document.getElementById("password").value
         var validationDiv = document.getElementById("validationDiv")
         if (!usernameRegex.test(username)) {
-            validationDiv.innerText = "Username must be 14 characters, consisting only of digits"
+            validationDiv.innerText = "Username must start with atleast 3 letters. Can contain '.' and '_'. It can end with numbers"
             return false
         } else if (!passwordRegex.test(password)) {
             validationDiv.innerText = "Password must be 8 characters or greater. Must contain uppercase and lowercase letters, digits and special characters."

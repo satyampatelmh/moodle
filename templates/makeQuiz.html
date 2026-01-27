@@ -1,9 +1,87 @@
-{% extends 'base.html' %}
-{% block body %}
+{% extends 'base.html' %} {% block body %}
 <h1>Welcome makeQuiz.html</h1>
 <div>
+    <form method="POST" action="url_for('makeQuiz')">
+        <input type="text" name="title" placeholder="Quiz title" required />
+
+        <div id="questions"></div>
+
+        <button type="button" onclick="addMCQ()">Add MCQ</button>
+        <button type="button" onclick="addCode()">Add Code Question</button>
 
 
+        <br /><br />
+        <button type="submit">Create Quiz</button>
+    </form>
     <a href="{{url_for('teacherDashboard')}}">Go Back</a>
 </div>
+
+<script>
+    let qIndex = 0;
+
+    function addMCQ() {
+        const container = document.getElementById("questions");
+
+        let optionsHTML = "";
+
+        // this loop runs 4 times (for 4 options)
+        for (let i = 0; i < 4; i++) {
+            optionsHTML += `
+      <div>
+        <input type="radio" name="correct_${qIndex}" value="${i}" required>
+        <input type="text" name="option_${qIndex}[]" placeholder="Option ${i + 1}" required>
+      </div>
+    `;
+        }
+
+        container.insertAdjacentHTML("beforeend", `
+    <div class="question">
+      <input type="hidden" name="question_type[]" value="mcq">
+
+      <textarea name="question_text[]" placeholder="MCQ question" required></textarea>
+      <input type="number" name="marks[]" placeholder="Marks" value="1" required>
+
+      ${optionsHTML}
+
+      <hr>
+    </div>
+  `);
+
+        qIndex++;
+    }
+
+
+    function addCode() {
+        const container = document.getElementById("questions");
+
+        container.insertAdjacentHTML("beforeend", `
+    <div class="question">
+      <!-- tells backend this is a code question -->
+      <input type="hidden" name="question_type[]" value="code">
+
+      <!-- question text -->
+      <textarea
+        name="question_text[]"
+        placeholder="Write the problem statement here"
+        required>
+      </textarea>
+
+      <!-- marks -->
+      <input
+        type="number"
+        name="marks[]"
+        placeholder="Marks"
+        required>
+
+      <p><i>Students will submit code for this question</i></p>
+
+      <hr>
+    </div>
+  `);
+        qIndex++;
+    }
+
+</script>
+
+
 {% endblock %}
