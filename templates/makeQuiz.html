@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block body %}
 <h1>Welcome makeQuiz.html</h1>
 <div>
-    <form method="POST" action="url_for('makeQuiz')">
+    <form method="POST" action="{{url_for('publishQuiz')}}">
         <input type="text" name="title" placeholder="Quiz title" required />
 
         <div id="questions"></div>

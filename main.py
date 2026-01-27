@@ -29,6 +29,63 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 
+class Quiz(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+
+    has_code_question = db.Column(db.Boolean, default=False)
+    is_published = db.Column(db.Boolean, default=False)
+
+
+class Question(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey("quiz.id"), nullable=False)
+
+    question_text = db.Column(db.Text, nullable=False)
+    question_type = db.Column(db.String(10), nullable=False)  # "mcq" or "code"
+    marks = db.Column(db.Integer, nullable=False)
+
+    quiz = db.relationship("Quiz", backref="questions")
+
+
+class Option(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
+
+    option_text = db.Column(db.String(300), nullable=False)
+    is_correct = db.Column(db.Boolean, default=False)
+
+    question = db.relationship("Question", backref="options")
+
+
+class Submission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey("quiz.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    is_finalized = db.Column(db.Boolean, default=False)
+    total_score = db.Column(db.Integer)
+
+    quiz = db.relationship("Quiz", backref="submissions")
+    student = db.relationship("User", backref="submissions")
+
+
+class Answer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    submission_id = db.Column(db.Integer, db.ForeignKey("submission.id"), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
+
+    selected_option_id = db.Column(db.Integer, db.ForeignKey("option.id"))
+    code_answer = db.Column(db.Text)
+
+    marks_obtained = db.Column(db.Integer)
+    is_graded = db.Column(db.Boolean, default=False)
+
+    submission = db.relationship("Submission", backref="answers")
+    question = db.relationship("Question")
+    selected_option = db.relationship("Option")
+
+
 # Routes
 @app.route("/")
 def home():
@@ -94,18 +151,67 @@ def teacherDashboard():
         return render_template("teacherDashboard.html",username=session["username"])
     return redirect(url_for('home'))
     
-#Make Quiz
+#Make Quiz Dashboard
 @app.route("/makeQuiz")
 def makeQuiz():
     if "username" in session:
         return render_template("makeQuiz.html",username=session["username"])
     
-#Grade Quiz
+#Grade Quiz Dashboard
 @app.route("/gradeQuiz")
 def gradeQuiz():
     if "username" in session:
         return render_template("gradeQuiz.html",username=session["username"])
         
+
+# Pubnlish Quiz
+@app.route("/publishQuiz", methods=["POST"])
+def publishQuiz():
+    title = request.form["title"]
+
+    question_types = request.form.getlist("question_type[]")
+    question_texts = request.form.getlist("question_text[]")
+    marks_list = request.form.getlist("marks[]")
+
+    quiz = Quiz(
+        title=title,
+        has_code_question=False,
+        is_published=False
+    )
+
+    db.session.add(quiz)
+    db.session.flush()
+
+    for i, qtype in enumerate(question_types):
+        question = Question(
+            quiz_id=quiz.id,
+            question_text=question_texts[i],
+            question_type=qtype,
+            marks=int(marks_list[i])
+        )
+
+        db.session.add(question)
+        db.session.flush()
+
+        if qtype == "mcq":
+            options = request.form.getlist(f"option_{i}[]")
+            correct_index = int(request.form.get(f"correct_{i}"))
+
+            for idx, opt_text in enumerate(options):
+                option = Option(
+                    question_id=question.id,
+                    option_text=opt_text,
+                    is_correct=(idx == correct_index)
+                )
+                db.session.add(option)
+
+        if qtype == "code":
+            quiz.has_code_question = True
+
+    db.session.commit()
+
+    return redirect(url_for("teacherDashboard"))
+
 
 if __name__ == "__main__":
     with app.app_context():
