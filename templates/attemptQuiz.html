@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Welcome attemptQuiz.html</h1>
+<div>
+    <h2>{{ quiz.title }}</h2>
+
+    <form method="POST" action="{{ url_for('submitQuiz', quiz_id=quiz.id) }}">
+
+        {% for question in questions %}
+
+        <div style="margin-bottom: 20px;">
+            <p><strong>{{ loop.index }}. {{ question.question_text }}</strong></p>
+            <p>Marks: {{ question.marks }}</p>
+
+            {% if question.question_type == "mcq" %}
+            {% for option in question.options %}
+            <div>
+                <input type="radio" name="answer_{{ question.id }}" value="{{ option.id }}" required>
+                {{ option.option_text }}
+            </div>
+            {% endfor %}
+
+            {% elif question.question_type == "code" %}
+            <textarea name="code_answer_{{ question.id }}" rows="8" cols="60"
+                placeholder="Write or paste your code here" required></textarea>
+
+            {% endif %}
+        </div>
+
+        {% endfor %}
+
+        <button type="submit">Submit Quiz</button>
+    </form>
+
+</div>
+{% endblock %}

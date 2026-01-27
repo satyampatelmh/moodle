@@ -2,6 +2,29 @@
 {% block body %}
 <h1>Welcome studentDashboard.html</h1>
 <div>
+    <h2>Available Quizzes</h2>
+
+    {% if quizzes %}
+    <ul>
+        {% for quiz in quizzes %}
+        <li>
+            <strong>{{ quiz.title }}</strong>
+
+            {% if quiz.has_code_question %}
+            <span>(Contains code questions)</span>
+            {% else %}
+            <span>(MCQ only)</span>
+            {% endif %}
+
+            <a href="{{ url_for('attemptQuiz', quiz_id=quiz.id) }}">
+                Attempt Quiz
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No quizzes available.</p>
+    {% endif %}
 
 
 

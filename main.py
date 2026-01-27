@@ -130,11 +130,12 @@ def register():
         session["username"] = username
         return redirect(url_for("studentDashboard"))
         
-# Dashboard
+# Student Dashboard
 @app.route("/studentDashboard")
 def studentDashboard():
     if "username" in session:
-        return render_template("studentDashboard.html", username=session["username"])
+        quizzes = Quiz.query.all()
+        return render_template("studentDashboard.html", username=session["username"], quizzes=quizzes)
     return redirect(url_for('home'))
 
 # Logout
@@ -164,7 +165,7 @@ def gradeQuiz():
         return render_template("gradeQuiz.html",username=session["username"])
         
 
-# Pubnlish Quiz
+# Publish Quiz
 @app.route("/publishQuiz", methods=["POST"])
 def publishQuiz():
     title = request.form["title"]
@@ -211,6 +212,25 @@ def publishQuiz():
     db.session.commit()
 
     return redirect(url_for("teacherDashboard"))
+
+
+
+#Attempt Quiz
+@app.route("/attemptQuiz/<int:quiz_id>")
+def attemptQuiz(quiz_id):
+    if "username" in session:
+        quiz = Quiz.query.get(quiz_id)
+        questions = Question.query.filter_by(quiz_id=quiz.id).all()
+        return render_template("attemptQuiz.html",username=session["username"], quiz=quiz, questions=questions) 
+
+# Submit Quiz
+@app.route("/submitQuiz/<int:quiz_id>")
+def submitQuiz(quiz_id):
+    if "username" in session:
+        # quiz = Quiz.query.get(quiz_id)
+        # questions = Question.query.filter_by(quiz_id=quiz.id).all()
+        # return render_template("attemptQuiz.html",username=session["username"], quiz=quiz, questions=questions)
+        return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
