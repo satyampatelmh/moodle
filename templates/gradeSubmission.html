@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block body %}
+<div>
+    <h2>Grade Submission</h2>
+
+<form method="POST" action="{{ url_for('submitGrades', submission_id=submission.id) }}">
+
+  {% for answer in answers %}
+    <div style="margin-bottom: 20px;">
+      <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
+
+      {% if answer.question.question_type == "code" %}
+        <pre>{{ answer.code_answer }}</pre>
+
+        <input
+          type="number"
+          name="marks_{{ answer.id }}"
+          placeholder="Marks (out of {{ answer.question.marks }})"
+          max="{{ answer.question.marks }}"
+          required
+        >
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <button type="submit">Save Grades</button>
+</form>
+
+</div>
+{% endblock %}

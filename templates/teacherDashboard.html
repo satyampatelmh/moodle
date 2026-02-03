@@ -4,7 +4,13 @@
 <div>
     <a  href="{{url_for('makeQuiz')}}" type="button" id="makequiz" class="btn btn-primary">Make a Quiz</a>
 
-    <a href="{{url_for('gradeQuiz')}}" type="button" id="gradequiz" class="btn btn-success">Grade a Quiz</a>
+    <a href="{{ url_for('gradeQuiz') }}"
+       type="button"
+       id="gradesubmission"
+       class="btn btn-success">
+       Grade a Quiz
+</a>
+
 
 
     <br>

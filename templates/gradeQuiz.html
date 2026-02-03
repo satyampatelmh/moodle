@@ -3,6 +3,27 @@
 <h1>Welcome gradeQuiz.html</h1>
 <div>
 
+    <h2>Submissions to Grade</h2>
+
+    <ul>
+    {% for sub in submissions %}
+        
+
+        {% for ans in sub.answers %}
+            {% if ans.question.question_type == "code" and not ans.is_graded %}
+                <li>
+                <strong>Quiz:</strong> {{ sub.quiz.title }} |
+                <strong>Student ID:</strong> {{ sub.student_id }}
+
+                <a href="{{ url_for('gradeSubmission', submission_id=sub.id) }}">
+                Grade
+                </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </ul>
+
 
 
     <a href="{{url_for('teacherDashboard')}}">Go Back</a>

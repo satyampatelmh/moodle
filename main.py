@@ -162,11 +162,7 @@ def makeQuiz():
     if "username" in session:
         return render_template("makeQuiz.html",username=session["username"])
     
-#Grade Quiz Dashboard
-@app.route("/gradeQuiz")
-def gradeQuiz():
-    if "username" in session:
-        return render_template("gradeQuiz.html",username=session["username"])
+
         
 
 # Publish Quiz
@@ -315,6 +311,72 @@ def viewResult(quiz_id):
         all_graded=all_graded,
         max_marks=max_marks    
     )
+
+
+
+# Grade the code
+@app.route("/gradeSubmission/<int:submission_id>")
+def gradeSubmission(submission_id):
+    submission = Submission.query.get(submission_id)
+
+    # get only CODE answers
+    answers = Answer.query.filter_by(
+        submission_id=submission.id
+    ).all()
+
+    return render_template( 
+        "gradeSubmission.html",
+        submission=submission,
+        answers=answers
+    )
+
+
+# Update marks
+@app.route("/submitGrades/<int:submission_id>/submit", methods=["POST"])
+def submitGrades(submission_id):
+    submission = Submission.query.get_or_404(submission_id)
+
+    answers = Answer.query.filter_by(
+        submission_id=submission.id
+    ).all()
+
+    total_score = 0
+
+    for answer in answers:
+        # MCQs already graded
+        if answer.question.question_type == "mcq":
+            total_score += answer.marks_obtained
+            continue
+
+        # CODE question
+        marks = int(request.form.get(f"marks_{answer.id}"))
+
+        answer.marks_obtained = marks
+        answer.is_graded = True
+
+        total_score += marks
+
+    submission.total_score = total_score
+
+    db.session.commit()
+    return redirect(url_for("teacherDashboard"))
+
+
+
+# QUiz list to grade
+@app.route("/teacher/grade")
+def gradeQuiz():
+    teacher_id = session.get("user_id")
+
+    submissions = Submission.query.all()
+
+    return render_template(
+        "gradeQuiz.html",
+        submissions=submissions
+    )
+
+
+
 
 
 if __name__ == "__main__":
