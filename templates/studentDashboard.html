@@ -4,30 +4,24 @@
 <div>
     <h2>Available Quizzes</h2>
 
-    {% if quizzes %}
     <ul>
         {% for quiz in quizzes %}
         <li>
             <strong>{{ quiz.title }}</strong>
 
-            {% if quiz.has_code_question %}
-            <span>(Contains code questions)</span>
+            {% if quiz.id in attempted_quiz_ids %}
+            <!-- student already attempted -->
+            <a href="{{ url_for('viewResult', quiz_id=quiz.id) }}">
+                View Result
+            </a>
             {% else %}
-            <span>(MCQ only)</span>
-            {% endif %}
-
+            <!-- student has NOT attempted -->
             <a href="{{ url_for('attemptQuiz', quiz_id=quiz.id) }}">
                 Attempt Quiz
             </a>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
-    {% else %}
-    <p>No quizzes available.</p>
-    {% endif %}
-
-
-
-    <a href="{{url_for('logout')}}">Logout</a>
 </div>
 {% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Welcome viewResult.html</h1>
+<h2>{{ quiz.title }} - Result</h2>
+
+{% if not all_graded %}
+<p><strong>Result pending.</strong> Teacher has not graded all answers yet.</p>
+{% else %}
+<p><strong>Total Score:</strong> {{ submission.total_score }}</p>
+{% endif %}
+
+<hr>
+
+{% for answer in answers %}
+<div style="margin-bottom: 15px;">
+    <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
+
+    {% if answer.question.question_type == "mcq" %}
+    <p>
+        <strong>Your Answer:</strong>
+        {{ answer.selected_option.option_text }}
+    </p>
+
+    {% if all_graded %}
+    <p><strong>Marks:</strong> {{ answer.marks_obtained }}</p>
+    {% endif %}
+
+    <hr>
+
+    {% else %}
+    <p><strong>Your Code:</strong></p>
+    <pre>{{ answer.code_answer }}</pre>
+
+    {% if answer.is_graded %}
+    <p><strong>Marks:</strong> {{ answer.marks_obtained }}</p>
+    {% else %}
+    <p><em>Not graded yet</em></p>
+    {% endif %}
+    {% endif %}
+</div>
+{% endfor %}
+
+</div>
+{% endblock %}

@@ -134,8 +134,13 @@ def register():
 @app.route("/studentDashboard")
 def studentDashboard():
     if "username" in session:
+        student_id = User.query.filter_by(username=session["username"]).first().id
+        
+        attempted_quiz_ids = {sub.quiz_id for sub in Submission.query.filter_by(student_id=student_id).all()}
+        
         quizzes = Quiz.query.all()
-        return render_template("studentDashboard.html", username=session["username"], quizzes=quizzes)
+        return render_template("studentDashboard.html", username=session["username"], quizzes=quizzes, attempted_quiz_ids=attempted_quiz_ids)
+    
     return redirect(url_for('home'))
 
 # Logout
@@ -224,13 +229,93 @@ def attemptQuiz(quiz_id):
         return render_template("attemptQuiz.html",username=session["username"], quiz=quiz, questions=questions) 
 
 # Submit Quiz
-@app.route("/submitQuiz/<int:quiz_id>")
+@app.route("/quiz/<int:quiz_id>/submit", methods=["POST"])
 def submitQuiz(quiz_id):
     if "username" in session:
-        # quiz = Quiz.query.get(quiz_id)
-        # questions = Question.query.filter_by(quiz_id=quiz.id).all()
-        # return render_template("attemptQuiz.html",username=session["username"], quiz=quiz, questions=questions)
-        return redirect(url_for('home'))
+        quiz = Quiz.query.get(quiz_id)
+        questions = Question.query.filter_by(quiz_id=quiz.id).all()
+        student_id = User.query.filter_by(username=session["username"]).first().id
+        submission = Submission(
+            quiz_id=quiz.id,
+            student_id=student_id,
+            total_score=0
+        )
+
+        db.session.add(submission)
+        db.session.flush()  # get submission.id
+
+        total_score = 0
+        has_code = False
+
+        for question in questions:
+
+            # MCQ question
+            if question.question_type == "mcq":
+                option_id = int(request.form.get(f"answer_{question.id}"))
+                option = Option.query.get(option_id)
+
+                marks = question.marks if option.is_correct else 0
+
+                answer = Answer(
+                    submission_id=submission.id,
+                    question_id=question.id,
+                    selected_option_id=option.id,
+                    marks_obtained=marks,
+                    is_graded=True
+                )
+
+                total_score += marks
+                db.session.add(answer)
+
+            # CODE question
+            else:
+                code = request.form.get(f"code_answer_{question.id}")
+
+                answer = Answer(
+                    submission_id=submission.id,
+                    question_id=question.id,
+                    code_answer=code,
+                    marks_obtained=None,
+                    is_graded=False
+                )
+
+                has_code = True
+                db.session.add(answer)
+
+        # if any code question exists, delay result
+        submission.total_score = None if has_code else total_score
+
+        db.session.commit()
+        return redirect(url_for("studentDashboard"))
+    return redirect(url_for('home'))
+
+# View Result
+@app.route("/quiz/<int:quiz_id>/result")
+def viewResult(quiz_id):
+    student_id = User.query.filter_by(username=session["username"]).first().id
+
+    quiz = Quiz.query.get_or_404(quiz_id)
+
+    # get student's submission for this quiz
+    submission = Submission.query.filter_by(
+        quiz_id=quiz.id,
+        student_id=student_id
+    ).first()
+
+    answers = Answer.query.filter_by(
+        submission_id=submission.id
+    ).all()
+
+    # check if all answers are graded
+    all_graded = all(ans.is_graded for ans in answers)
+
+    return render_template(
+        "viewResult.html",
+        quiz=quiz,
+        submission=submission,
+        answers=answers,
+        all_graded=all_graded
+    )
 
 
 if __name__ == "__main__":
