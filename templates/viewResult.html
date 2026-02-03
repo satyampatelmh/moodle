@@ -6,7 +6,9 @@
 {% if not all_graded %}
 <p><strong>Result pending.</strong> Teacher has not graded all answers yet.</p>
 {% else %}
-<p><strong>Total Score:</strong> {{ submission.total_score }}</p>
+<p><strong>Total Score:</strong> {{ submission.total_score }}/{{ max_marks }} marks</p>
+<p><strong>Percentage:</strong> {{ 100 * submission.total_score / max_marks}}%</p>
+
 {% endif %}
 
 <hr>
@@ -39,6 +41,7 @@
     {% endif %}
 </div>
 {% endfor %}
+<a href="{{url_for('studentDashboard')}}">Go Back</a>
 
 </div>
 {% endblock %}

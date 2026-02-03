@@ -34,7 +34,6 @@ class Quiz(db.Model):
     title = db.Column(db.String(200), nullable=False)
 
     has_code_question = db.Column(db.Boolean, default=False)
-    is_published = db.Column(db.Boolean, default=False)
 
 
 class Question(db.Model):
@@ -182,7 +181,6 @@ def publishQuiz():
     quiz = Quiz(
         title=title,
         has_code_question=False,
-        is_published=False
     )
 
     db.session.add(quiz)
@@ -295,7 +293,7 @@ def viewResult(quiz_id):
     student_id = User.query.filter_by(username=session["username"]).first().id
 
     quiz = Quiz.query.get_or_404(quiz_id)
-
+    max_marks = sum( q.marks for q in quiz.questions)
     # get student's submission for this quiz
     submission = Submission.query.filter_by(
         quiz_id=quiz.id,
@@ -314,7 +312,8 @@ def viewResult(quiz_id):
         quiz=quiz,
         submission=submission,
         answers=answers,
-        all_graded=all_graded
+        all_graded=all_graded,
+        max_marks=max_marks    
     )
 
 
