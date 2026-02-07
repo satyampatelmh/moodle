@@ -294,6 +294,7 @@ def viewResult(quiz_id):
     submission = Submission.query.filter_by(
         quiz_id=quiz.id,
         student_id=student_id
+        
     ).first()
 
     answers = Answer.query.filter_by(
@@ -363,7 +364,7 @@ def submitGrades(submission_id):
 
 
 
-# QUiz list to grade
+# Quiz list to grade
 @app.route("/teacher/grade")
 def gradeQuiz():
     teacher_id = session.get("user_id")
@@ -375,6 +376,54 @@ def gradeQuiz():
         submissions=submissions
     )
 
+
+
+#Search a Student
+@app.route("/teacher/studentHistory", methods=["GET", "POST"])
+def studentHistory():
+    if request.method == "POST":
+        student_id = request.form["student_id"]
+
+        student = User.query.get(student_id)
+
+        submissions = Submission.query.filter_by(
+            student_id=student_id
+        ).all()
+
+        results = []
+
+        for sub in submissions:
+            total_possible = sum(q.marks for q in sub.quiz.questions)
+
+            if sub.total_score is None:
+                percentage = None
+                status = "Pending"
+            else:
+                percentage = round((sub.total_score / total_possible) * 100, 2)
+                status = "Pass" if percentage >= 35 else "Fail"
+
+            results.append({
+                "quiz_title": sub.quiz.title,
+                "score": sub.total_score,
+                "total": total_possible,
+                "percentage": percentage,
+                "status": status
+            })
+
+        return render_template(
+            "studentHistory.html",
+            student=student,
+            results=results
+        )
+
+    return render_template("studentSearch.html")
+
+
+# View all Students
+@app.route("/teacher/viewStudents")
+def viewStudents():
+    students = User.query.filter_by(user_type="student").all()
+    return render_template("studentList.html", students=students)
 
 
 

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Welcome teacherDashboard.html</h1>
+<div>
+    
+
+        <h2>Student: {{ student.username }}</h2>
+
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>Quiz Name</th>
+                <th>Score</th>
+                <th>Total Marks</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+
+            {% for r in results %}
+            <tr>
+                <td>{{ r.quiz_title }}</td>
+
+                {% if r.score is none %}
+                <td colspan="4">Result Pending</td>
+                {% else %}
+                <td>{{ r.score }}</td>
+                <td>{{ r.total }}</td>
+                <td>{{ r.percentage }}%</td>
+                <td>{{ r.status }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+</table>
+
+
+    <a href="{{url_for('teacherDashboard')}}">Go Back</a>
+
+</div>
+{% endblock %}

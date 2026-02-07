@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Welcome student_search.html</h1>
+<div>
+
+    <form method="POST">
+        <input type="number" name="student_id" placeholder="Enter Student ID" required>
+        <button type="submit">Search</button>
+    </form>
+
+
+    <a href="{{url_for('teacherDashboard')}}">Go Back</a>
+
+</div>
+{% endblock %}
