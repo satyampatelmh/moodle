@@ -1,53 +1,7 @@
 {% extends "base.html" %}
-
 {% block body %}
 
-<div>
-    <h1>Welcome index.html</h1>
-    <form id="auth-form" action="{{ url_for('login') }}" method="post">
-        <input type="text" name="username" placeholder="username" id="username">
-        <input type="password" name="password" placeholder="password" id="password">
-        <input type="submit" value="Login" onclick="setActionForm('login')">
-        <input type="button" value="Register" onclick="setActionForm('register')">
-    </form>
-    {% if error %}
-    <div class="error">{{ error }}</div>
-    {% endif %}
-    <div class="error" id="validationDiv"></div>
-</div>
+<h1>Welcome to Moodle Clone</h1>
 
-<script>
-    function validCredentials() {
-        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-        var usernameRegex = /^[A-Za-z]{3}[A-Za-z0-9._]*[0-9]*$/
-
-        var username = document.getElementById("username").value
-        var password = document.getElementById("password").value
-        var validationDiv = document.getElementById("validationDiv")
-        if (!usernameRegex.test(username)) {
-            validationDiv.innerText = "Username must start with atleast 3 letters. Can contain '.' and '_'. It can end with numbers"
-            return false
-        } else if (!passwordRegex.test(password)) {
-            validationDiv.innerText = "Password must be 8 characters or greater. Must contain uppercase and lowercase letters, digits and special characters."
-            return false
-        }
-        return true
-    }
-    function setActionForm(action) {
-        let form = document.getElementById("auth-form")
-        if (action === "login") {
-            form.action = "{{url_for('login')}}";
-            form.method = "post";
-            form.submit();
-        } else if (action === "register") {
-            if (validCredentials()) {
-                form.action = "{{url_for('register')}}";
-                form.method = "post";
-                form.submit();
-            }
-        }
-    }
-
-</script>
 
 {% endblock body %}

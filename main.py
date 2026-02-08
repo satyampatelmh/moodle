@@ -95,39 +95,63 @@ def home():
             return redirect(url_for('studentDashboard'))
     return render_template("index.html")
 
-# Login
+
+# Show Login Page
+@app.route("/login-page")
+def showLogin():
+    return render_template("login.html")
+
+
+# Show Register Page
+@app.route("/register-page")
+def showRegister():
+    return render_template("register.html")
+
+
+#Login
 @app.route("/login", methods=["POST"])
 def login():
     username = request.form["username"]
     password = request.form["password"]
+
     user = User.query.filter_by(username=username).first()
+
     if user and user.check_password(password):
         session["username"] = username
+
         if user.user_type == "teacher":
             session["user_type"] = "teacher"
             return redirect(url_for("teacherDashboard"))
+
         elif user.user_type == "student":
             session["user_type"] = "student"
             return redirect(url_for("studentDashboard"))
-        return redirect(url_for("dashboard"))
-    else:
-        return render_template("index.html")
+
+    return render_template("login.html", error="Invalid username or password")
+
 
 # Register
 @app.route("/register", methods=["POST"])
 def register():
     username = request.form["username"]
     password = request.form["password"]
+
     user = User.query.filter_by(username=username).first()
+
     if user:
-        return render_template("index.html", error="User already registered")
-    else:
-        new_user = User(username=username, user_type="student")
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        session["username"] = username
-        return redirect(url_for("studentDashboard"))
+        return render_template("register.html", error="User already registered")
+
+    new_user = User(username=username, user_type="student")
+    new_user.set_password(password)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    session["username"] = username
+    session["user_type"] = "student"
+
+    return redirect(url_for("studentDashboard"))
+
         
 # Student Dashboard
 @app.route("/studentDashboard")
@@ -424,8 +448,6 @@ def studentHistory():
 def viewStudents():
     students = User.query.filter_by(user_type="student").all()
     return render_template("studentList.html", students=students)
-
-
 
 
 if __name__ == "__main__":
