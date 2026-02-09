@@ -1,36 +1,86 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block body %}
-<h1>Welcome attemptQuiz.html</h1>
-<div>
-    <h2>{{ quiz.title }}</h2>
 
-    <form method="POST" action="{{ url_for('submitQuiz', quiz_id=quiz.id) }}">
+<div class="container fade-in" style="max-width: 800px;">
+    <div class="text-center mb-5">
+        <span class="badge bg-indigo-100 text-indigo-800 px-3 py-2 rounded-pill mb-3 fw-bold">Assessment</span>
+        <h1 class="display-5 fw-bold text-dark">{{ quiz.title }}</h1>
+        <p class="text-muted">Answer all questions carefully. Good luck!</p>
+    </div>
 
+    <form action="{{ url_for('submitQuiz', quiz_id=quiz.id) }}" method="POST">
         {% for question in questions %}
-
-        <div style="margin-bottom: 20px;">
-            <p><strong>{{ loop.index }}. {{ question.question_text }}</strong></p>
-            <p>Marks: {{ question.marks }}</p>
-
-            {% if question.question_type == "mcq" %}
-            {% for option in question.options %}
-            <div>
-                <input type="radio" name="answer_{{ question.id }}" value="{{ option.id }}" required>
-                {{ option.option_text }}
+        <div class="card custom-card mb-4 slide-up" style="--animation-delay: {{ loop.index0 * 0.1 }}s;">
+            <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
+                <div class="d-flex justify-content-between align-items-start">
+                    <span class="badge bg-primary rounded-pill mb-2">Question {{ loop.index }}</span>
+                    <span class="badge bg-light text-dark border">{{ question.marks }} Marks</span>
+                </div>
             </div>
-            {% endfor %}
+            <div class="card-body px-4 pb-4">
+                <h5 class="card-text fw-bold mb-4">{{ question.question_text }}</h5>
 
-            {% elif question.question_type == "code" %}
-            <textarea name="code_answer_{{ question.id }}" rows="8" cols="60"
-                placeholder="Write or paste your code here" required></textarea>
-
-            {% endif %}
+                {% if question.question_type == "mcq" %}
+                <div class="d-grid gap-2">
+                    {% for option in question.options %}
+                    <div class="form-check p-0">
+                        <input type="radio" class="btn-check" name="answer_{{ question.id }}" id="opt_{{ option.id }}"
+                            value="{{ option.id }}" required>
+                        <label
+                            class="btn btn-outline-light text-dark text-start w-100 border p-3 rounded-3 d-flex align-items-center"
+                            for="opt_{{ option.id }}">
+                            <div class="border rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                style="width: 24px; height: 24px; min-width: 24px;">
+                                <div class="bg-primary rounded-circle"
+                                    style="width: 12px; height: 12px; display: none;"></div>
+                            </div>
+                            {{ option.option_text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="form-group">
+                    <label class="form-label text-muted small fw-bold text-uppercase mb-2">Your Code Solution</label>
+                    <textarea class="form-control font-monospace bg-light border-0" name="code_answer_{{ question.id }}"
+                        rows="8" placeholder="// Write your code here..." required style="resize: vertical;"></textarea>
+                </div>
+                {% endif %}
+            </div>
         </div>
-
         {% endfor %}
 
-        <button type="submit">Submit Quiz</button>
+        <div class="d-grid mt-5 mb-5">
+            <button type="submit" class="btn btn-primary-custom btn-lg py-3 shadow-lg">
+                Submit Quiz <i class="fa-solid fa-paper-plane ms-2"></i>
+            </button>
+        </div>
     </form>
-
 </div>
+
+<style>
+    /* Custom styling for radio buttons to look like cards */
+    .btn-check:checked+.btn-outline-light {
+        background-color: #eff6ff;
+        /* blue-50 */
+        border-color: #3b82f6 !important;
+        /* blue-500 */
+        color: #1e3a8a;
+        /* blue-900 */
+    }
+
+    .btn-check:checked+.btn-outline-light .rounded-circle .bg-primary {
+        display: block !important;
+    }
+
+    .btn-check:checked+.btn-outline-light .border.rounded-circle {
+        border-color: #3b82f6 !important;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #f8fafc;
+        border-color: #cbd5e1 !important;
+    }
+</style>
+
 {% endblock %}

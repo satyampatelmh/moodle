@@ -1,68 +1,71 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h2>Register</h2>
+<div class="container d-flex justify-content-center align-items-center py-5">
+  <div class="card custom-card shadow-lg p-4 fade-in" style="width: 100%; max-width: 500px;">
+    <div class="card-body">
+      <div class="text-center mb-4">
+        <div class="bg-indigo-100 rounded-full p-3 d-inline-block mb-3">
+          <i class="fa-solid fa-user-plus text-primary fa-2x"></i>
+        </div>
+        <h2 class="card-title fw-bold">Create Account</h2>
+        <p class="text-muted small">Join our learning community today</p>
+      </div>
 
-<form id="registerForm"
-      action="{{ url_for('register') }}"
-      method="post"
-      onsubmit="return validCredentials()">
+      {% if error %}
+      <div class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+      {% endif %}
 
-  <input type="text" name="username" id="username" placeholder="Username" required>
-  
-  <input type="password" name="password" id="password" placeholder="Password" required>
+      <form action="{{ url_for('register') }}" method="POST">
+        <div class="mb-3">
+          <label for="full_name" class="form-label fw-semibold">Full Name</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="fa-regular fa-user"></i></span>
+            <input type="text" class="form-control" name="full_name" id="full_name" placeholder="John Doe" required>
+          </div>
+        </div>
 
-  <input type="text" name="full_name" placeholder="Full Name" required>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="username" class="form-label fw-semibold">Username</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="johndoe123" required>
+          </div>
+          <div class="col-md-6">
+            <label for="mobile" class="form-label fw-semibold">Mobile</label>
+            <input type="tel" class="form-control" name="mobile" id="mobile" placeholder="1234567890" required>
+          </div>
+        </div>
 
-  <input type="email" name="email" id="email" placeholder="Email" required>
+        <div class="mb-3">
+          <label for="email" class="form-label fw-semibold">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="fa-regular fa-envelope"></i></span>
+            <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
+          </div>
+        </div>
 
-  <input type="text" name="mobile" id="mobile" placeholder="Mobile Number" required>
+        <div class="mb-4">
+          <label for="password" class="form-label fw-semibold">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="fa-solid fa-lock"></i></span>
+            <input type="password" class="form-control" name="password" id="password"
+              placeholder="Create a strong password" required>
+          </div>
+        </div>
 
-  <input type="submit" value="Register">
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary-custom btn-lg">Register</button>
+        </div>
+      </form>
 
-</form>
+      <div class="text-center mt-4">
+        <p class="small text-muted">Already have an account? <a href="{{ url_for('showLogin') }}"
+            class="text-primary fw-bold text-decoration-none">Login</a></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-<div class="error" id="validationDiv"></div>
-
-
-<script>
-function validCredentials() {
-
-  var passwordRegex =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-
-  var usernameRegex =
-      /^[A-Za-z]{3}[A-Za-z0-9._]*[0-9]*$/;
-
-  var mobileRegex =
-      /^9[0-9]{9}$/;  // starts with 9 + total 10 digits
-
-  var username = document.getElementById("username").value;
-  var password = document.getElementById("password").value;
-  var mobile = document.getElementById("mobile").value;
-
-  var validationDiv = document.getElementById("validationDiv");
-
-  if (!usernameRegex.test(username)) {
-    validationDiv.innerText =
-      "Username must start with 3 letters and can contain digits or . _ ";
-    return false;
-  }
-
-  if (!passwordRegex.test(password)) {
-    validationDiv.innerText =
-      "Password must contain uppercase, lowercase, number & special character.";
-    return false;
-  }
-
-  if (!mobileRegex.test(mobile)) {
-    validationDiv.innerText =
-      "Mobile number must start with 9 and be exactly 10 digits.";
-    return false;
-  }
-
-  return true;
-}
-</script>
-
-{% endblock body %}
+{% endblock %}

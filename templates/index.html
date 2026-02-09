@@ -1,7 +1,66 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>Welcome to Moodle Clone</h1>
+<!-- Hero Section -->
+<section class="text-center py-5 fade-in">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-3 fw-bold text-primary mb-4">Master Your Learning Journey</h1>
+                <p class="lead text-secondary mb-5">
+                    Experience a seamless and modern way to take quizzes, track progress, and grade assignments.
+                    Built for students and teachers who demand excellence.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('showRegister') }}" class="btn btn-primary-custom btn-lg shadow-lg">Get
+                        Started</a>
+                    <a href="{{ url_for('showLogin') }}" class="btn btn-outline-custom btn-lg">Login</a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 slide-up">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                alt="Dashboard Preview" class="img-fluid rounded-4 shadow-lg border border-white"
+                style="max-height: 400px; object-fit: cover; width: 100%;">
+        </div>
+    </div>
+</section>
 
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card custom-card h-100 p-4 text-center">
+                    <div class="mb-3 text-primary">
+                        <i class="fa-solid fa-laptop-code fa-3x"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Code & MCQ Quizzes</h3>
+                    <p class="text-muted">Create diverse assessments including coding challenges and multiple-choice
+                        questions.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card h-100 p-4 text-center">
+                    <div class="mb-3 text-primary">
+                        <i class="fa-solid fa-chart-line fa-3x"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Instant Results</h3>
+                    <p class="text-muted">Get immediate feedback on MCQs and track your performance over time.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card h-100 p-4 text-center">
+                    <div class="mb-3 text-primary">
+                        <i class="fa-solid fa-chalkboard-user fa-3x"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Teacher Dashboard</h3>
+                    <p class="text-muted">Powerful tools for educators to manage students, quizzes, and grades
+                        effortlessly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock body %}

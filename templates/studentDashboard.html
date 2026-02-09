@@ -1,29 +1,52 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block body %}
-<h1>Welcome studentDashboard.html</h1>
-<div>
-    <h2>Available Quizzes</h2>
 
-    <ul>
-        {% for quiz in quizzes %}
-        <li>
-            <strong>{{ quiz.title }}</strong>
-
-            {% if quiz.id in attempted_quiz_ids %}
-            <!-- student already attempted -->
-            <a href="{{ url_for('viewResult', quiz_id=quiz.id) }}">
-                View Result
-            </a>
-            {% else %}
-            <!-- student has NOT attempted -->
-            <a href="{{ url_for('attemptQuiz', quiz_id=quiz.id) }}">
-                Attempt Quiz
-            </a>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    <a href="{{url_for('logout')}}">Logout</a>
-
+<div class="row mb-5 fade-in">
+    <div class="col-md-12 text-center">
+        <h1 class="fw-bold text-primary mb-3">Student Dashboard</h1>
+        <p class="text-secondary">Welcome back, {{ username }}! Ready to learn something new?</p>
+    </div>
 </div>
+
+<div class="row g-4 slide-up">
+    {% for quiz in quizzes %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card custom-card h-100 border-0">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-indigo-50 text-primary rounded-circle p-3 me-3">
+                        <i class="fa-solid fa-book-open fa-lg"></i>
+                    </div>
+                    <h5 class="card-title fw-bold text-dark mb-0">{{ quiz.title }}</h5>
+                </div>
+
+                <div class="mt-auto pt-3">
+                    {% if quiz.id in attempted_quiz_ids %}
+                    <div class="d-grid">
+                        <a href="{{ url_for('viewResult', quiz_id=quiz.id) }}" class="btn btn-outline-success fw-bold">
+                            <i class="fa-solid fa-chart-bar me-2"></i>View Result
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="d-grid">
+                        <a href="{{ url_for('attemptQuiz', quiz_id=quiz.id) }}" class="btn btn-primary-custom fw-bold">
+                            <i class="fa-solid fa-pen-nib me-2"></i>Attempt Quiz
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <div class="text-muted opacity-75 mb-3">
+            <i class="fa-regular fa-clipboard fa-3x"></i>
+        </div>
+        <h4 class="text-muted">No quizzes available yet.</h4>
+        <p class="text-muted small">Check back later for new assignments.</p>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

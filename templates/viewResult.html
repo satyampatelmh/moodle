@@ -1,47 +1,88 @@
 {% extends 'base.html' %}
 {% block body %}
-<h1>Welcome viewResult.html</h1>
-<h2>{{ quiz.title }} - Result</h2>
 
-{% if not all_graded %}
-<p><strong>Result pending.</strong> Teacher has not graded all answers yet.</p>
-{% else %}
-<p><strong>Total Score:</strong> {{ submission.total_score }}/{{ max_marks }} marks</p>
-<p><strong>Percentage:</strong> {{ 100 * submission.total_score / max_marks}}%</p>
+<div class="container fade-in" style="max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <span class="badge bg-indigo-100 text-indigo-800 px-3 py-2 rounded-pill mb-2 fw-bold">Result</span>
+            <h1 class="h2 fw-bold text-dark">{{ quiz.title }}</h1>
+        </div>
+        <a href="{{ url_for('studentDashboard') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fa-solid fa-arrow-left me-2"></i>Dashboard
+        </a>
+    </div>
 
-{% endif %}
+    <!-- Score Card -->
+    <div class="card custom-card bg-white border-0 shadow-lg mb-5 overflow-hidden">
+        <div class="card-body p-5 text-center">
+            {% if not all_graded %}
+            <div class="py-4">
+                <div class="spinner-border text-warning mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h3 class="fw-bold text-warning">Grading in Progress</h3>
+                <p class="text-muted">Your coding questions are being reviewed by the teacher.</p>
+            </div>
+            {% else %}
+            <div class="py-2 slide-up">
+                <h5 class="text-uppercase text-muted fw-bold small tracking-wider mb-3">Total Score</h5>
+                <div class="display-1 fw-bold text-primary mb-3">{{ submission.total_score }} <span
+                        class="fs-4 text-muted">/ {{ max_marks }}</span></div>
 
-<hr>
+                {% set percentage = (submission.total_score / max_marks) * 100 %}
+                {% set bar_class = 'bg-success' if percentage >= 35 else 'bg-danger' %}
+                <div class="progress mb-3" style="height: 10px; max-width: 300px; margin: 0 auto;">
+                    <div class="progress-bar {% if result.percentage >= 35 %}bg-success{% else %}bg-danger{% endif %} w-[{{ result.percentage }}%]"
+                        role="progressbar" aria-valuenow="{{ result.percentage }}" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
+                <p class="h5 fw-bold {% if percentage >= 35 %}text-success{% else %}text-danger{% endif %}">
+                    {{ "%.2f"|format(percentage) }}% - {% if percentage >= 35 %}Passed{% else %}Failed{% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
-{% for answer in answers %}
-<div style="margin-bottom: 15px;">
-    <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
+    <!-- Detailed Breakdown -->
+    <h4 class="fw-bold mb-4">Detailed Breakdown</h4>
 
-    {% if answer.question.question_type == "mcq" %}
-    <p>
-        <strong>Your Answer:</strong>
-        {{ answer.selected_option.option_text }}
-    </p>
+    {% for answer in answers %}
+    <div class="card custom-card mb-4 slide-up" style="--animation-delay: {{ loop.index0 * 0.1 }}s;">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h6 class="fw-bold text-dark mb-0 w-75">{{ answer.question.question_text }}</h6>
+                {% if all_graded %}
+                <span
+                    class="badge {% if answer.marks_obtained > 0 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">
+                    {{ answer.marks_obtained }} / {{ answer.question.marks }} Marks
+                </span>
+                {% else %}
+                <span class="badge bg-secondary rounded-pill">Pending</span>
+                {% endif %}
+            </div>
 
-    {% if all_graded %}
-    <p><strong>Marks:</strong> {{ answer.marks_obtained }}</p>
-    {% endif %}
+            {% if answer.question.question_type == "mcq" %}
+            <div class="p-3 bg-light rounded-3 border">
+                <small class="text-uppercase text-muted fw-bold d-block mb-1">Your Answer</small>
+                <span class="fw-medium text-dark">{{ answer.selected_option.option_text }}</span>
+            </div>
+            {% else %}
+            <div class="p-3 bg-dark rounded-3 border border-secondary">
+                <small class="text-uppercase text-white-50 fw-bold d-block mb-2">Your Code</small>
+                <pre class="text-white m-0 font-monospace small"
+                    style="white-space: pre-wrap;">{{ answer.code_answer }}</pre>
+            </div>
+            {% if not answer.is_graded %}
+            <div class="mt-2 text-warning small">
+                <i class="fa-solid fa-hourglass-half me-1"></i> Waiting for teacher to grade.
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
 
-    <hr>
-
-    {% else %}
-    <p><strong>Your Code:</strong></p>
-    <pre>{{ answer.code_answer }}</pre>
-
-    {% if answer.is_graded %}
-    <p><strong>Marks:</strong> {{ answer.marks_obtained }}</p>
-    {% else %}
-    <p><em>Not graded yet</em></p>
-    {% endif %}
-    {% endif %}
 </div>
-{% endfor %}
-<a href="{{url_for('studentDashboard')}}">Go Back</a>
 
-</div>
 {% endblock %}

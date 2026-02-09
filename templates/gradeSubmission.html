@@ -1,30 +1,70 @@
 {% extends 'base.html' %}
 {% block body %}
-<div>
-    <h2>Grade Submission</h2>
 
-<form method="POST" action="{{ url_for('submitGrades', submission_id=submission.id) }}">
-
-  {% for answer in answers %}
-    <div style="margin-bottom: 20px;">
-      <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
-
-      {% if answer.question.question_type == "code" %}
-        <pre>{{ answer.code_answer }}</pre>
-
-        <input
-          type="number"
-          name="marks_{{ answer.id }}"
-          placeholder="Marks (out of {{ answer.question.marks }})"
-          max="{{ answer.question.marks }}"
-          required
-        >
-      {% endif %}
+<div class="container fade-in" style="max-width: 900px;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 fw-bold text-primary mb-1">Grade Submission</h1>
+      <p class="text-muted small mb-0">
+        Student ID: <span class="fw-bold">{{ submission.student_id }}</span> |
+        Quiz: <span class="fw-bold">{{ submission.quiz.title }}</span>
+      </p>
     </div>
-  {% endfor %}
+    <a href="{{ url_for('gradeQuiz') }}" class="btn btn-outline-secondary btn-sm">
+      <i class="fa-solid fa-arrow-left me-2"></i>Back to List
+    </a>
+  </div>
 
-  <button type="submit">Save Grades</button>
-</form>
+  <form method="POST" action="{{ url_for('submitGrades', submission_id=submission.id) }}">
+    {% for answer in answers %}
+    {% if answer.question.question_type == 'code' %}
+    <div class="card custom-card mb-4 slide-up">
+      <div class="card-header bg-light border-0 py-3">
+        <h5 class="mb-0 fw-bold text-dark">Question {{ loop.index }}</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info border-0 bg-indigo-50 text-indigo-900 mb-3">
+          <i class="fa-solid fa-circle-question me-2"></i>
+          <strong>Problem:</strong> {{ answer.question.question_text }}
+        </div>
 
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-bold text-uppercase">Student Code Answer</label>
+          <div class="bg-dark text-white p-3 rounded-3 font-monospace position-relative" style="min-height: 100px;">
+            <pre class="m-0" style="white-space: pre-wrap;">{{ answer.code_answer }}</pre>
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Marks Awarded</label>
+            <div class="input-group">
+              <input type="number" class="form-control" name="marks_{{ answer.id }}"
+                value="{{ answer.marks_obtained if answer.is_graded else '' }}" min="0"
+                max="{{ answer.question.marks }}" required>
+              <span class="input-group-text">/ {{ answer.question.marks }}</span>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <!-- Optional feedback field could go here if backed supported it -->
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <div class="fixed-bottom bg-white border-top p-3 shadow-lg" style="z-index: 1000;">
+      <div class="container text-end" style="max-width: 900px;">
+        <button type="submit" class="btn btn-success btn-lg px-5 fw-bold">
+          <i class="fa-solid fa-check me-2"></i>Submit Grades
+        </button>
+      </div>
+    </div>
+
+    <!-- Spacer -->
+    <div style="height: 80px;"></div>
+  </form>
 </div>
+
 {% endblock %}

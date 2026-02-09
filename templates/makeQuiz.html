@@ -1,87 +1,120 @@
-{% extends 'base.html' %} {% block body %}
-<h1>Welcome makeQuiz.html</h1>
-<div>
-    <form method="POST" action="{{url_for('publishQuiz')}}">
-        <input type="text" name="title" placeholder="Quiz title" required />
+{% extends 'base.html' %}
+{% block body %}
 
-        <div id="questions"></div>
+<div class="container fade-in" style="max-width: 800px;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 fw-bold text-primary">Create a New Quiz</h1>
+    <a href="{{url_for('teacherDashboard')}}" class="btn btn-outline-secondary btn-sm">
+      <i class="fa-solid fa-arrow-left me-2"></i>Back
+    </a>
+  </div>
 
-        <button type="button" onclick="addMCQ()">Add MCQ</button>
-        <button type="button" onclick="addCode()">Add Code Question</button>
+  <form method="POST" action="{{url_for('publishQuiz')}}" class="card custom-card p-4">
+    <div class="mb-4">
+      <label for="title" class="form-label fw-bold">Quiz Title</label>
+      <input type="text" class="form-control form-control-lg" name="title" id="title"
+        placeholder="e.g. Data Structures Midterm" required />
+    </div>
 
+    <div id="questions" class="d-grid gap-4 mb-4">
+      <!-- Dynamic Questions will appear here -->
+    </div>
 
-        <br /><br />
-        <button type="submit">Create Quiz</button>
-    </form>
-    <a href="{{url_for('teacherDashboard')}}">Go Back</a>
+    <div class="fixed-bottom bg-white border-top p-3 shadow-lg" style="z-index: 1000;">
+      <div class="container d-flex justify-content-between align-items-center" style="max-width: 800px;">
+        <div class="btn-group">
+          <button type="button" class="btn btn-outline-primary" onclick="addMCQ()">
+            <i class="fa-solid fa-list-ul me-2"></i>Add MCQ
+          </button>
+          <button type="button" class="btn btn-outline-dark" onclick="addCode()">
+            <i class="fa-solid fa-code me-2"></i>Add Code Question
+          </button>
+        </div>
+        <button type="submit" class="btn btn-primary-custom px-4">
+          <i class="fa-solid fa-paper-plane me-2"></i>Publish Quiz
+        </button>
+      </div>
+    </div>
+
+    <!-- Spacer for fixed bottom -->
+    <div style="height: 60px;"></div>
+  </form>
 </div>
 
 <script>
-    let qIndex = 0;
+  let qIndex = 0;
 
-    function addMCQ() {
-        const container = document.getElementById("questions");
+  function addMCQ() {
+    const container = document.getElementById("questions");
+    let optionsHTML = "";
 
-        let optionsHTML = "";
-
-        // this loop runs 4 times (for 4 options)
-        for (let i = 0; i < 4; i++) {
-            optionsHTML += `
-      <div>
-        <input type="radio" name="correct_${qIndex}" value="${i}" required>
-        <input type="text" name="option_${qIndex}[]" placeholder="Option ${i + 1}" required>
-      </div>
-    `;
-        }
-
-        container.insertAdjacentHTML("beforeend", `
-    <div class="question">
-      <input type="hidden" name="question_type[]" value="mcq">
-
-      <textarea name="question_text[]" placeholder="MCQ question" required></textarea>
-      <input type="number" name="marks[]" placeholder="Marks" value="1" required>
-
-      ${optionsHTML}
-
-      <hr>
-    </div>
-  `);
-
-        qIndex++;
+    // Loop for 4 options
+    for (let i = 0; i < 4; i++) {
+      optionsHTML += `
+                <div class="input-group mb-2">
+                    <div class="input-group-text bg-light">
+                        <input class="form-check-input mt-0" type="radio" name="correct_${qIndex}" value="${i}" required aria-label="Correct answer for option ${i + 1}">
+                    </div>
+                    <input type="text" class="form-control" name="option_${qIndex}[]" placeholder="Option ${i + 1}" required>
+                </div>
+            `;
     }
 
+    const questionHTML = `
+            <div class="card border-0 bg-light rounded-3 p-3 position-relative slide-up">
+                <span class="badge bg-primary w-auto mb-2 align-self-start">MCQ</span>
+                
+                <input type="hidden" name="question_type[]" value="mcq">
 
-    function addCode() {
-        const container = document.getElementById("questions");
+                <div class="mb-3">
+                    <label class="form-label small text-muted fw-bold text-uppercase">Question Text</label>
+                    <textarea class="form-control" name="question_text[]" rows="2" placeholder="Enter the question here..." required></textarea>
+                </div>
 
-        container.insertAdjacentHTML("beforeend", `
-    <div class="question">
-      <!-- tells backend this is a code question -->
-      <input type="hidden" name="question_type[]" value="code">
+                <div class="mb-3">
+                    <label class="form-label small text-muted fw-bold text-uppercase">Marks</label>
+                    <input type="number" class="form-control" name="marks[]" placeholder="Marks" value="1" min="1" required style="max-width: 100px;">
+                </div>
 
-      <!-- question text -->
-      <textarea
-        name="question_text[]"
-        placeholder="Write the problem statement here"
-        required>
-      </textarea>
+                <div class="mb-2">
+                    <label class="form-label small text-muted fw-bold text-uppercase">Options (Select the radio button for the correct answer)</label>
+                    ${optionsHTML}
+                </div>
+            </div>
+        `;
 
-      <!-- marks -->
-      <input
-        type="number"
-        name="marks[]"
-        placeholder="Marks"
-        required>
+    container.insertAdjacentHTML("beforeend", questionHTML);
+    qIndex++;
+  }
 
-      <p><i>Students will submit code for this question</i></p>
+  function addCode() {
+    const container = document.getElementById("questions");
 
-      <hr>
-    </div>
-  `);
-        qIndex++;
-    }
+    const questionHTML = `
+            <div class="card border-0 bg-light rounded-3 p-3 position-relative slide-up">
+                <span class="badge bg-dark w-auto mb-2 align-self-start">Code Question</span>
+                
+                <input type="hidden" name="question_type[]" value="code">
 
+                <div class="mb-3">
+                    <label class="form-label small text-muted fw-bold text-uppercase">Problem Statement</label>
+                    <textarea class="form-control font-monospace" name="question_text[]" rows="4" placeholder="Write the problem statement here..." required></textarea>
+                </div>
+
+                <div class="mb-2">
+                     <label class="form-label small text-muted fw-bold text-uppercase">Marks</label>
+                    <input type="number" class="form-control" name="marks[]" placeholder="Marks" value="5" min="1" required style="max-width: 100px;">
+                </div>
+
+                <p class="text-muted small mt-2 d-flex align-items-center">
+                    <i class="fa-solid fa-circle-info me-2"></i> Students will submit code for this question.
+                </p>
+            </div>
+        `;
+
+    container.insertAdjacentHTML("beforeend", questionHTML);
+    qIndex++;
+  }
 </script>
-
 
 {% endblock %}

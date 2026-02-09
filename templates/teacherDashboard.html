@@ -1,34 +1,73 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block body %}
-<h1>Welcome teacherDashboard.html</h1>
-<div>
-    <a  href="{{url_for('makeQuiz')}}" type="button" id="makequiz" class="btn btn-primary">Make a Quiz</a>
 
-    <a href="{{ url_for('gradeQuiz') }}"
-       type="button"
-       id="gradesubmission"
-       class="btn btn-success">
-       Grade a Quiz
-    </a>
-
-    <a href="{{ url_for('studentHistory') }}"
-       type="button"
-       id="studentHistory"
-       class="btn btn-success">
-       Search a Student
-    </a>
-
-
-    <a href="{{ url_for('viewStudents') }}"
-       type="button"
-       id="studentList"
-       class="btn btn-success">
-       View All Students
-    </a>
-
-
-    <br>
-    <br>
-    <a href="{{url_for('logout')}}">Logout</a>
+<div class="row mb-5 fade-in">
+   <div class="col-md-12 text-center">
+      <h1 class="fw-bold text-primary mb-3">Teacher Dashboard, {{ username }}</h1>
+      <p class="text-secondary">Manage quizzes, grade submissions, and track student progress.</p>
+   </div>
 </div>
+
+<div class="row g-4 slide-up">
+   <!-- Create Quiz Card -->
+   <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('makeQuiz') }}" class="text-decoration-none">
+         <div class="card custom-card h-100 text-center p-4 border-0">
+            <div class="card-body">
+               <div class="bg-indigo-50 text-primary rounded-circle d-inline-flex p-3 mb-3">
+                  <i class="fa-solid fa-plus fa-2x"></i>
+               </div>
+               <h5 class="card-title fw-bold text-dark">Create Quiz</h5>
+               <p class="card-text text-muted small">Design new assessments with MCQs or coding questions.</p>
+            </div>
+         </div>
+      </a>
+   </div>
+
+   <!-- Grade Quiz Card -->
+   <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('gradeQuiz') }}" class="text-decoration-none">
+         <div class="card custom-card h-100 text-center p-4 border-0">
+            <div class="card-body">
+               <div class="bg-green-50 text-success rounded-circle d-inline-flex p-3 mb-3">
+                  <i class="fa-solid fa-check-double fa-2x"></i>
+               </div>
+               <h5 class="card-title fw-bold text-dark">Grade Submissions</h5>
+               <p class="card-text text-muted small">Review student answers and assign marks.</p>
+            </div>
+         </div>
+      </a>
+   </div>
+
+   <!-- Student History Card -->
+   <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('studentHistory') }}" class="text-decoration-none">
+         <div class="card custom-card h-100 text-center p-4 border-0">
+            <div class="card-body">
+               <div class="bg-blue-50 text-info rounded-circle d-inline-flex p-3 mb-3">
+                  <i class="fa-solid fa-clock-rotate-left fa-2x"></i>
+               </div>
+               <h5 class="card-title fw-bold text-dark">Student History</h5>
+               <p class="card-text text-muted small">View past performance of specific students.</p>
+            </div>
+         </div>
+      </a>
+   </div>
+
+   <!-- View All Students Card -->
+   <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('viewStudents') }}" class="text-decoration-none">
+         <div class="card custom-card h-100 text-center p-4 border-0">
+            <div class="card-body">
+               <div class="bg-purple-50 text-warning rounded-circle d-inline-flex p-3 mb-3">
+                  <i class="fa-solid fa-users fa-2x"></i>
+               </div>
+               <h5 class="card-title fw-bold text-dark">View Students</h5>
+               <p class="card-text text-muted small">Browse list of all registered students.</p>
+            </div>
+         </div>
+      </a>
+   </div>
+</div>
+
 {% endblock %}
