@@ -183,9 +183,9 @@ def studentDashboard():
 # Logout
 @app.route("/logout")
 def logout():
-    session.pop("username", None)
-    session.pop("user_type", None)
-    return redirect(url_for('home'))
+    session.clear()
+    return redirect(url_for("home"))
+
 
 #Teacher Dashboard
 @app.route("/teacherDashboard")

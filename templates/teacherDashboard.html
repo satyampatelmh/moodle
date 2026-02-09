@@ -70,4 +70,13 @@
    </div>
 </div>
 
+<a href="{{ url_for('logout') }}">Logout</a>
+
+<button class="logout-btn"
+        onclick="window.location.href='{{ url_for('logout') }}'">
+    Logout
+</button>
+
+
+
 {% endblock %}
