@@ -8,17 +8,15 @@
       method="post"
       onsubmit="return validCredentials()">
 
-  <input type="text"
-         name="username"
-         id="username"
-         placeholder="username"
-         required>
+  <input type="text" name="username" id="username" placeholder="Username" required>
+  
+  <input type="password" name="password" id="password" placeholder="Password" required>
 
-  <input type="password"
-         name="password"
-         id="password"
-         placeholder="password"
-         required>
+  <input type="text" name="full_name" placeholder="Full Name" required>
+
+  <input type="email" name="email" id="email" placeholder="Email" required>
+
+  <input type="text" name="mobile" id="mobile" placeholder="Mobile Number" required>
 
   <input type="submit" value="Register">
 
@@ -26,28 +24,40 @@
 
 <div class="error" id="validationDiv"></div>
 
+
 <script>
 function validCredentials() {
 
   var passwordRegex =
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
   var usernameRegex =
-    /^[A-Za-z]{3}[A-Za-z0-9._]*[0-9]*$/;
+      /^[A-Za-z]{3}[A-Za-z0-9._]*[0-9]*$/;
+
+  var mobileRegex =
+      /^9[0-9]{9}$/;  // starts with 9 + total 10 digits
 
   var username = document.getElementById("username").value;
   var password = document.getElementById("password").value;
+  var mobile = document.getElementById("mobile").value;
+
   var validationDiv = document.getElementById("validationDiv");
 
   if (!usernameRegex.test(username)) {
     validationDiv.innerText =
-      "Username must start with at least 3 letters";
+      "Username must start with 3 letters and can contain digits or . _ ";
     return false;
   }
 
   if (!passwordRegex.test(password)) {
     validationDiv.innerText =
-      "Password must contain upper, lower, number & special char";
+      "Password must contain uppercase, lowercase, number & special character.";
+    return false;
+  }
+
+  if (!mobileRegex.test(mobile)) {
+    validationDiv.innerText =
+      "Mobile number must start with 9 and be exactly 10 digits.";
     return false;
   }
 

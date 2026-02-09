@@ -21,6 +21,10 @@ class User(db.Model):
     user_type = db.Column(db.String(7), nullable = False)
     username = db.Column(db.String(14), unique=True, nullable=False)
     password_hash = db.Column(db.String(300), nullable=False)
+    full_name = db.Column(db.String(100), nullable=False)
+    mobile = db.Column(db.String(15), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -133,15 +137,24 @@ def login():
 # Register
 @app.route("/register", methods=["POST"])
 def register():
+    full_name = request.form["full_name"]
     username = request.form["username"]
     password = request.form["password"]
+    mobile = request.form["mobile"]
+    email = request.form["email"]
 
     user = User.query.filter_by(username=username).first()
 
     if user:
         return render_template("register.html", error="User already registered")
 
-    new_user = User(username=username, user_type="student")
+    new_user = User(
+        full_name=full_name,
+        username=username,
+        mobile=mobile,
+        email=email,
+        user_type="student"
+    )
     new_user.set_password(password)
 
     db.session.add(new_user)
@@ -151,6 +164,7 @@ def register():
     session["user_type"] = "student"
 
     return redirect(url_for("studentDashboard"))
+
 
         
 # Student Dashboard
