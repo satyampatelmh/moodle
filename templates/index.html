@@ -1,66 +1,209 @@
 {% extends "base.html" %}
-{% block body %}
 
+{% block body %}
 <!-- Hero Section -->
-<section class="text-center py-5 fade-in">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h1 class="display-3 fw-bold text-primary mb-4">Master Your Learning Journey</h1>
-                <p class="lead text-secondary mb-5">
-                    Experience a seamless and modern way to take quizzes, track progress, and grade assignments.
+<section class="relative bg-gradient-to-r from-blue-600 to-indigo-700 min-h-[600px] flex items-center overflow-hidden">
+    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-white fade-in-up">
+               
+                <h1 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+                    Master Your <br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-400">Learning
+                        Journey</span>
+                </h1>
+                <p class="text-xl text-blue-100 mb-8 leading-relaxed max-w-lg">
+                    Experience a seamless way to take quizzes, track progress, and grade assignments.
                     Built for students and teachers who demand excellence.
                 </p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ url_for('showRegister') }}" class="btn btn-primary-custom btn-lg shadow-lg">Get
-                        Started</a>
-                    <a href="{{ url_for('showLogin') }}" class="btn btn-outline-custom btn-lg">Login</a>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{{ url_for('showRegister') }}"
+                        class="group relative px-8 py-4 bg-white text-indigo-600 font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                        <span class="relative z-10 flex items-center gap-2">
+                            Get Started Free
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                    </a>
+                    <a href="{{ url_for('showLogin') }}"
+                        class="px-8 py-4 bg-indigo-600 border-2 border-white/30 text-white font-bold rounded-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                        Login
+                    </a>
+                </div>
+
+                
+            </div>
+
+            <div class="relative hidden lg:block">
+                <div class="relative z-10 transform rotate-[-5deg] hover:rotate-0 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                        alt="Coding Dashboard"
+                        class="rounded-3xl shadow-2xl border-4 border-white/20 w-full object-cover aspect-[4/3]">
+
+                    <!-- Floating Cards -->
+                    <div
+                        class="absolute -bottom-10 -left-10 bg-white p-4 rounded-xl shadow-xl flex items-center gap-4 animate-bounce-slow">
+                        <div
+                            class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-check text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Status</p>
+                            <p class="text-gray-900 font-bold">Quiz Completed</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="absolute -top-10 -right-10 bg-white p-4 rounded-xl shadow-xl flex items-center gap-4 animate-float">
+                        <div
+                            class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                            <i class="fa-solid fa-code text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Feature</p>
+                            <p class="text-gray-900 font-bold">Code Compiler</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Background decoration -->
+                <div
+                    class="absolute inset-0 bg-indigo-500 rounded-full filter blur-[100px] opacity-30 -z-10 transform scale-150">
                 </div>
             </div>
         </div>
-        <div class="mt-5 slide-up">
-            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                alt="Dashboard Preview" class="img-fluid rounded-4 shadow-lg border border-white"
-                style="max-height: 400px; object-fit: cover; width: 100%;">
-        </div>
+    </div>
+
+    <!-- Wave Separator -->
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto text-gray-50 fill-current">
+            <path
+                d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,224C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+            </path>
+        </svg>
     </div>
 </section>
 
 <!-- Features Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card custom-card h-100 p-4 text-center">
-                    <div class="mb-3 text-primary">
-                        <i class="fa-solid fa-laptop-code fa-3x"></i>
-                    </div>
-                    <h3 class="h4 mb-3">Code & MCQ Quizzes</h3>
-                    <p class="text-muted">Create diverse assessments including coding challenges and multiple-choice
-                        questions.</p>
+<section class="py-24 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-indigo-600 font-bold tracking-wide uppercase text-sm mb-4">Why Choose Us</h2>
+            <h3 class="text-4xl font-bold text-gray-900 mb-6">Everything you need to <span
+                    class="text-indigo-600">Excel</span></h3>
+            <p class="text-gray-600 text-lg">Our platform provides a comprehensive suite of tools designed to enhance
+                the learning and teaching experience.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div
+                class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                <div
+                    class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-code"></i>
                 </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Interactive Assessments</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    Test your skills with our advanced coding compiler and multiple-choice questions designed to
+                    challenge you.
+                </p>
             </div>
-            <div class="col-md-4">
-                <div class="card custom-card h-100 p-4 text-center">
-                    <div class="mb-3 text-primary">
-                        <i class="fa-solid fa-chart-line fa-3x"></i>
-                    </div>
-                    <h3 class="h4 mb-3">Instant Results</h3>
-                    <p class="text-muted">Get immediate feedback on MCQs and track your performance over time.</p>
+
+            <!-- Feature 2 -->
+            <div
+                class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                <div
+                    class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-bolt"></i>
                 </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Instant Feedback</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    Get real-time results for MCQs and detailed grading for code submissions. Track your improvements.
+                </p>
             </div>
-            <div class="col-md-4">
-                <div class="card custom-card h-100 p-4 text-center">
-                    <div class="mb-3 text-primary">
-                        <i class="fa-solid fa-chalkboard-user fa-3x"></i>
-                    </div>
-                    <h3 class="h4 mb-3">Teacher Dashboard</h3>
-                    <p class="text-muted">Powerful tools for educators to manage students, quizzes, and grades
-                        effortlessly.</p>
+
+            <!-- Feature 3 -->
+            <div
+                class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                <div
+                    class="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-chalkboard-user"></i>
                 </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Teacher Tools</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    Empower educators with powerful dashboards to create quizzes, manage students, and analyze
+                    performance.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-{% endblock body %}
+<!-- Stats Section -->
+<section class="py-20 bg-indigo-700 text-white relative overflow-hidden">
+    <!-- Background Patterns -->
+    <div
+        class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full filter blur-3xl transform translate-x-1/2 -translate-y-1/2">
+    </div>
+    <div
+        class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-10 rounded-full filter blur-3xl transform -translate-x-1/2 translate-y-1/2">
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-2xl lg:text-3xl font-bold mb-2 text-yellow-400">500+</div>
+                <div class="text-indigo-200">Active Students</div>
+            </div>
+            <div>
+                <div class="text-2xl lg:text-3xl font-bold mb-2 text-yellow-400">100+</div>
+                <div class="text-indigo-200">Quizzes Created</div>
+            </div>
+            <div>
+                <div class="text-2xl lg:text-3xl font-bold mb-2 text-yellow-400">5k+</div>
+                <div class="text-indigo-200">Questions Solved</div>
+            </div>
+            <div>
+                <div class="text-2xl lg:text-3xl font-bold mb-2 text-yellow-400">98%</div>
+                <div class="text-indigo-200">Satisfaction Rate</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .animate-bounce-slow {
+        animation: float 4s ease-in-out infinite reverse;
+    }
+
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

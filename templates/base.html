@@ -35,23 +35,22 @@
   </script>
 
   <style>
-    .logout-btn{
-    background-color: #5f43ec;
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
+    .logout-btn {
+      background-color: #5f43ec;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
 
-  .logout-btn:hover{
+    .logout-btn:hover {
       background-color: #6e67ed;
       transform: scale(1.05);
-  }
-
-  </style>
+    }
+  </style>  
 
 </head>
 
@@ -105,11 +104,12 @@
 
   <!-- Main Content -->
   <main class="flex-grow-1" style="min-height: calc(100vh - 140px);">
+    <!-- Flash Messages could go here -->
+    {% block body %}
     <div class="container py-4">
-      <!-- Flash Messages could go here -->
-      {% block body %}
-      {% endblock %}
+      <!-- Default content goes here if block is not overridden -->
     </div>
+    {% endblock %}
   </main>
 
   <!-- Footer -->
