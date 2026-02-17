@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="container text-center mt-5">
+    <h2>Your Performance Graph</h2>
+
+    <img src="data:image/png;base64,{{ graph_url }}" class="img-fluid">
+
+    <br><br>
+
+    <a href="{{ url_for('studentDashboard') }}" class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+</div>
+
+{% endblock %}

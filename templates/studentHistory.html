@@ -81,4 +81,22 @@
 
 
 
+{% if graph_url %}
+<hr class="my-4">
+
+<h4 class="fw-bold text-primary">Performance Graph</h4>
+
+<div class="card custom-card p-3 mt-3 text-center">
+
+    <img src="data:image/png;base64,{{ graph_url }}"
+         style="max-width:600px; width:100%; height:auto;"
+         class="mx-auto d-block">
+
+</div>
+
+{% endif %}
+
+
+
+
 {% endblock %}

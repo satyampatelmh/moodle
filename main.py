@@ -4,6 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from dotenv import load_dotenv
 from google import genai
+import matplotlib.pyplot as plt
+import io
+import base64
+
 
 app = Flask(__name__)
 load_dotenv() # Loading variables from .env
@@ -431,11 +435,12 @@ def gradeQuiz():
     )
 
 
-
-#Search a Student
+#Teacher search a student
 @app.route("/teacher/studentHistory", methods=["GET", "POST"])
 def studentHistory():
+
     if request.method == "POST":
+
         student_id = request.form["student_id"]
 
         student = User.query.get(student_id)
@@ -445,6 +450,10 @@ def studentHistory():
         ).all()
 
         results = []
+
+        # For graph
+        quiz_titles = []
+        percentages = []
 
         for sub in submissions:
             total_possible = sum(q.marks for q in sub.quiz.questions)
@@ -456,6 +465,10 @@ def studentHistory():
                 percentage = round((sub.total_score / total_possible) * 100, 2)
                 status = "Pass" if percentage >= 35 else "Fail"
 
+                # graph data
+                quiz_titles.append(sub.quiz.title)
+                percentages.append(percentage)
+
             results.append({
                 "quiz_title": sub.quiz.title,
                 "score": sub.total_score,
@@ -464,10 +477,28 @@ def studentHistory():
                 "status": status
             })
 
+        graph_url = None
+
+        if percentages:
+            plt.figure(figsize=(6,4))
+            plt.plot(quiz_titles, percentages, marker='o', linestyle='-', color='blue')
+            plt.ylim(0, 100)
+            plt.xticks(rotation=45)
+            plt.title("Performance Graph")
+            plt.tight_layout()
+
+            img = io.BytesIO()
+            plt.savefig(img, format='png')
+            img.seek(0)
+
+            graph_url = base64.b64encode(img.getvalue()).decode()
+            plt.close()
+
         return render_template(
             "studentHistory.html",
             student=student,
-            results=results
+            results=results,
+            graph_url=graph_url
         )
 
     return render_template("studentSearch.html")
@@ -514,6 +545,51 @@ No words. No punctuation.
         marks = 0
 
     return marks
+
+
+
+
+@app.route("/student/studentPerformance")
+def studentPerformance():
+
+    if "username" not in session:
+        return redirect(url_for("home"))
+
+    student = User.query.filter_by(username=session["username"]).first()
+
+    submissions = Submission.query.filter_by(student_id=student.id).all()
+
+    quiz_titles = []
+    percentages = []
+
+    for sub in submissions:
+        if sub.total_score is not None:
+            max_marks = sum(q.marks for q in sub.quiz.questions)
+            percentage = (sub.total_score / max_marks) * 100
+
+            quiz_titles.append(sub.quiz.title)
+            percentages.append(percentage)
+
+    # Create plot
+    plt.figure(figsize=(8,5))
+    plt.plot(quiz_titles, percentages, marker='o')
+    plt.xlabel("Quiz")
+    plt.ylabel("Percentage")
+    plt.title("Performance Over Time")
+    plt.xticks(rotation=45)
+
+    # Save to memory
+    img = io.BytesIO()
+    plt.tight_layout()
+    plt.savefig(img, format='png')
+    img.seek(0)
+
+    graph_url = base64.b64encode(img.getvalue()).decode()
+
+    plt.close()
+
+    return render_template("studentPerformance.html", graph_url=graph_url)
+
 
 if __name__ == "__main__":
     with app.app_context():
