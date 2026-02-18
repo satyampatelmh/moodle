@@ -63,42 +63,7 @@
         <i class="fa-solid fa-graduation-cap text-primary fa-xl"></i>
         <span class="fw-bold text-primary">MoodleClone</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
-          </li>
-          {% if session.get('username') %}
-          {% if session.get('user_type') == 'teacher' %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('teacherDashboard') }}">Dashboard</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('studentDashboard') }}">Dashboard</a>
-          </li>
-          {% endif %}
-          <li class="nav-item ms-lg-3">
-            <span class="nav-link" style="cursor: default;">
-              <i class="fa-regular fa-user me-1"></i> Hello, {{ session.get('username') }}
-            </span>
-          </li>
-          <li class="nav-item ms-lg-2">
-            <a class="btn btn-outline-danger btn-sm" href="{{ url_for('logout') }}">Logout</a>
-          </li>
-          {% else %}
-          <li class="nav-item ms-lg-3">
-            <a class="btn btn-outline-custom me-2" href="{{ url_for('showLogin') }}">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary-custom" href="{{ url_for('showRegister') }}">Register</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
+      
     </div>
   </nav>
 

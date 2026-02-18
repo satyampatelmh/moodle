@@ -462,8 +462,11 @@ def studentHistory():
                 percentage = None
                 status = "Pending"
             else:
+                
                 percentage = round((sub.total_score / total_possible) * 100, 2)
                 status = "Pass" if percentage >= 35 else "Fail"
+               
+
 
                 # graph data
                 quiz_titles.append(sub.quiz.title)

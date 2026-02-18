@@ -1,29 +1,304 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<div class="container d-flex justify-content-center pt-5 fade-in">
-    <div class="card custom-card shadow-lg p-5 text-center" style="max-width: 500px; width: 100%;">
-        <div class="mb-4 text-primary">
-            <i class="fa-solid fa-magnifying-glass fa-3x"></i>
-        </div>
-        <h2 class="card-title fw-bold mb-3">Search Student</h2>
-        <p class="text-muted mb-4">Enter a Student ID to view their history and performance.</p>
+<div class="container pt-5 fade-in">
+    <!-- Header with Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div></div> <!-- Spacer for centering if needed, or just let tabs center below -->
+        <a href="{{ url_for('teacherDashboard') }}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
 
-        <form method="POST" action="{{ url_for('studentHistory') }}">
-            <div class="input-group mb-3">
-                <span class="input-group-text bg-light"><i class="fa-regular fa-id-card"></i></span>
-                <input type="number" class="form-control form-control-lg" name="student_id" placeholder="Ex: 101"
-                    required>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-pills nav-fill mb-4 p-1 bg-white rounded shadow-sm" id="searchTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-bold" id="id-tab" data-bs-toggle="tab" data-bs-target="#id-pane"
+                        type="button" role="tab" aria-controls="id-pane" aria-selected="true">
+                        <i class="fa-regular fa-id-card me-2"></i>Search by ID
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="name-tab" data-bs-toggle="tab" data-bs-target="#name-pane"
+                        type="button" role="tab" aria-controls="name-pane" aria-selected="false">
+                        <i class="fa-solid fa-user-graduate me-2"></i>Search by Name
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="searchTabsContent">
+
+                <!-- Search by ID Pane -->
+                <div class="tab-pane fade show active" id="id-pane" role="tabpanel" aria-labelledby="id-tab">
+                    <div class="card custom-card shadow-lg p-5 text-center">
+                        <div class="mb-4 text-primary">
+                            <i class="fa-regular fa-id-card fa-3x"></i>
+                        </div>
+                        <h3 class="card-title fw-bold mb-3">Search by ID</h3>
+                        <p class="text-muted mb-4">Enter a Student ID directly to view their history.</p>
+
+                        <form method="POST" action="{{ url_for('studentHistory') }}" id="idSearchForm">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-hashtag"></i></span>
+                                <input type="number" class="form-control form-control-lg" name="student_id"
+                                    id="studentIdInput" placeholder="Ex: 101" required>
+                            </div>
+                            <div id="idFeedback" class="text-start mb-3" style="min-height: 24px;"></div>
+                            <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-bold">View
+                                History</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Search by Name Pane -->
+                <div class="tab-pane fade" id="name-pane" role="tabpanel" aria-labelledby="name-tab">
+                    <div class="card custom-card shadow-lg p-5 text-center">
+                        <div class="mb-4 text-secondary">
+                            <i class="fa-solid fa-user-graduate fa-3x"></i>
+                        </div>
+                        <h3 class="card-title fw-bold mb-3">Search by Name</h3>
+                        <p class="text-muted mb-4">Type a name to see suggestions (Prefix Search).</p>
+
+                        <div class="position-relative">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-light"><i
+                                        class="fa-solid fa-magnifying-glass"></i></span>
+                                <input type="text" class="form-control form-control-lg" id="nameInput"
+                                    placeholder="Ex: Rahul" disabled autocomplete="off">
+                            </div>
+                            <!-- Suggestions List -->
+                            <ul class="list-group position-absolute w-100 text-start shadow" id="suggestionsList"
+                                style="z-index: 1000; display: none; max-height: 200px; overflow-y: auto;">
+                                <!-- dynamic items -->
+                            </ul>
+                        </div>
+                        <div id="nameLoading" class="text-muted small mt-2">Loading student data... <i
+                                class="fa-solid fa-spinner fa-spin"></i></div>
+
+                        <div id="nameFeedback" class="text-danger mb-2 small" style="display:none;"></div>
+                        <button type="button" id="nameSearchBtn"
+                            class="btn btn-primary-custom w-100 py-2 fw-bold mt-3">View History</button>
+                    </div>
+                </div>
+
             </div>
-            <button type="submit" class="btn btn-primary-custom w-100 py-3 fw-bold">Search History</button>
-        </form>
-
-        <div class="mt-4">
-            <a href="{{ url_for('teacherDashboard') }}" class="text-decoration-none text-secondary">
-                <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
-            </a>
         </div>
     </div>
+
+    <!-- Hidden form for Name search submission -->
+    <form method="POST" action="{{ url_for('studentHistory') }}" id="hiddenNameForm" style="display:none;">
+        <input type="hidden" name="student_id" id="hiddenStudentId">
+    </form>
+
+    <form method="POST" action="{{ url_for('studentHistory') }}" id="hiddenNameForm" style="display:none;">
+        <input type="hidden" name="student_id" id="hiddenStudentId">
+    </form>
 </div>
+
+<script>
+    /**
+     * Trie Node Structure
+     */
+    class TrieNode {
+        constructor() {
+            this.children = {};
+            this.isEndOfWord = false;
+            this.studentData = null; // Store {id, name} at leaf
+        }
+    }
+
+    /**
+     * Trie Data Structure for Prefix Search
+     */
+    class Trie {
+        constructor() {
+            this.root = new TrieNode();
+        }
+
+        insert(name, data) {
+            let node = this.root;
+            const lowerName = name.toLowerCase();
+            for (let char of lowerName) {
+                if (!node.children[char]) {
+                    node.children[char] = new TrieNode();
+                }
+                node = node.children[char];
+            }
+            node.isEndOfWord = true;
+            node.studentData = data;
+        }
+
+        searchPrefix(prefix) {
+            let node = this.root;
+            const lowerPrefix = prefix.toLowerCase();
+            for (let char of lowerPrefix) {
+                if (!node.children[char]) {
+                    return [];
+                }
+                node = node.children[char];
+            }
+            return this._collectWords(node);
+        }
+
+        _collectWords(node, results = []) {
+            if (node.isEndOfWord) {
+                results.push(node.studentData);
+            }
+            for (let char in node.children) {
+                this._collectWords(node.children[char], results);
+            }
+            return results;
+        }
+    }
+
+    // Global Data Structures
+    const studentTrie = new Trie();
+    const studentMap = {}; // HashMap: ID -> Name
+
+    // DOM Elements
+    const nameInput = document.getElementById('nameInput');
+    const suggestionsList = document.getElementById('suggestionsList');
+    const nameLoading = document.getElementById('nameLoading');
+    const studentIdInput = document.getElementById('studentIdInput');
+    const idFeedback = document.getElementById('idFeedback');
+    const idSearchForm = document.getElementById('idSearchForm');
+
+    // Fetch and Parse Data on Load
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch("{{ url_for('viewStudents') }}");
+            const text = await response.text();
+
+            // Parse HTML to extract student data
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+
+            // Extract from the cards in studentList.html
+            // Structure: h5 is name, p containing "ID: " is ID
+            const cards = doc.querySelectorAll('.custom-card');
+
+            if (cards.length > 0) {
+                cards.forEach(card => {
+                    const nameEl = card.querySelector('h5');
+                    const idEl = Array.from(card.querySelectorAll('p')).find(p => p.textContent.includes('ID:'));
+
+                    if (nameEl && idEl) {
+                        const name = nameEl.textContent.trim();
+                        // Extract ID from string "ID: 101"
+                        const idText = idEl.textContent.replace('ID:', '').trim();
+                        const id = parseInt(idText);
+
+                        if (name && id) {
+                            // 1. Insert into Trie
+                            studentTrie.insert(name, { id, name });
+
+                            // 2. Insert into HashMap
+                            studentMap[id] = name;
+                        }
+                    }
+                });
+            }
+
+            // Enable input
+            nameInput.disabled = false;
+            nameLoading.style.display = 'none';
+            nameInput.placeholder = "Type a name (e.g. Aman)";
+
+        } catch (error) {
+            console.error("Error fetching students:", error);
+            nameLoading.textContent = "Error loading student data.";
+            nameLoading.classList.add('text-danger');
+        }
+    });
+
+    // Name Search Input Handler
+    nameInput.addEventListener('input', function () {
+        const prefix = this.value.trim();
+        suggestionsList.innerHTML = '';
+        suggestionsList.style.display = 'none';
+
+        if (prefix.length === 0) return;
+
+        const results = studentTrie.searchPrefix(prefix);
+
+        if (results.length > 0) {
+            suggestionsList.style.display = 'block';
+            // Limit to top 5 results for UI cleanliness
+            results.slice(0, 5).forEach(student => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item list-group-item-action cursor-pointer';
+                li.innerHTML = `<strong>${student.name}</strong> <small class='text-muted'>(ID: ${student.id})</small>`;
+
+                li.addEventListener('click', () => {
+                    // Populate inputs but DO NOT submit yet
+                    nameInput.value = student.name;
+                    document.getElementById('hiddenStudentId').value = student.id;
+                    suggestionsList.style.display = 'none';
+                    document.getElementById('nameFeedback').style.display = 'none';
+                });
+
+                suggestionsList.appendChild(li);
+            });
+        } else {
+            suggestionsList.style.display = 'block';
+            suggestionsList.innerHTML = '<li class="list-group-item text-muted">No students found.</li>';
+        }
+    });
+
+    // Handle "View History" button click for Name Search
+    document.getElementById('nameSearchBtn').addEventListener('click', function () {
+        const studentId = document.getElementById('hiddenStudentId').value;
+        const nameVal = nameInput.value;
+
+        if (studentId && nameVal) {
+            document.getElementById('hiddenNameForm').submit();
+        } else {
+            const feedback = document.getElementById('nameFeedback');
+            feedback.style.display = 'block';
+            feedback.innerText = "Please select a valid student from the suggestions.";
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function (e) {
+        if (e.target !== nameInput && e.target !== suggestionsList) {
+            suggestionsList.style.display = 'none';
+        }
+    });
+
+    // ID Search Validation
+    studentIdInput.addEventListener('input', function () {
+        const id = parseInt(this.value);
+        if (!id) {
+            idFeedback.style.display = 'none';
+            return;
+        }
+
+        if (studentMap[id]) {
+            idFeedback.style.display = 'block';
+            idFeedback.className = 'text-success mb-2 small';
+            idFeedback.innerHTML = `<i class="fa-solid fa-check"></i> Found: ${studentMap[id]}`;
+        } else {
+            idFeedback.style.display = 'block';
+            idFeedback.className = 'text-danger mb-2 small';
+            idFeedback.innerHTML = `<i class="fa-solid fa-times"></i> ID not found`;
+        }
+    });
+
+    // Prevent submission if ID invalid (optional, but good UX)
+    idSearchForm.addEventListener('submit', function (e) {
+        const id = parseInt(studentIdInput.value);
+        if (!studentMap[id]) {
+            e.preventDefault();
+            idFeedback.style.display = 'block';
+            idFeedback.className = 'text-danger mb-2 small';
+            idFeedback.innerText = "Please enter a valid Student ID.";
+        }
+    });
+
+</script>
 
 {% endblock %}

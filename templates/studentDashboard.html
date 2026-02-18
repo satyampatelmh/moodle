@@ -3,13 +3,12 @@
 
 <div class="row mb-5 fade-in">
     <div class="col-md-12 text-center">
-        <h1 class="fw-bold text-primary mb-3">Student Dashboard</h1>
+        <h1 class="fw-bold text-primary mb-3">Student DashBoard</h1>
         <p class="text-secondary">Welcome back, {{ username }}! Ready to learn something new?</p>
     </div>
 </div>
 
-<a href="{{ url_for('studentPerformance') }}"
-   class="btn btn-outline-primary fw-bold mb-4">
+<a href="{{ url_for('studentPerformance') }}" class="btn btn-outline-primary fw-bold mb-4">
     <i class="fa-solid fa-chart-line me-2"></i>
     View Performance Graph
 </a>
@@ -59,10 +58,13 @@
 
 <br>
 
-<button class="logout-btn"
-        onclick="window.location.href='{{ url_for('logout') }}'">
-    Logout
-</button>
+<br>
+<div class="text-center mb-5">
+    <button class="btn btn-primary-custom px-4 py-2 fw-bold shadow-sm" style="background-color: #4f46e5; border: none;"
+        onclick="window.location.href='{{ url_for('logout') }}';">
+        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+    </button>
+</div>
 
 
 
