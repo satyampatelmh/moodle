@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block body %}
 
-<div class="row mb-5 fade-in">
+<div class="row mb-5 fade-in mt-3">
     <div class="col-md-12 text-center">
-        <h1 class="fw-bold text-primary mb-3">Student DashBoard</h1>
-        <p class="text-secondary">Welcome back, {{ username }}! Ready to learn something new?</p>
+        <h1 class="fw-bold text-primary mb-3 text-3xl">Student DashBoard</h1>
+        <p class="text-secondary text-xl">Welcome back, {{ username }}! Ready to learn something new?</p>
     </div>
 </div>
 
-<a href="{{ url_for('studentPerformance') }}" class="btn btn-outline-primary fw-bold mb-4">
+<a href="{{ url_for('studentPerformance') }}" class="btn btn-outline-primary fw-bold mb-4 ml-4">
     <i class="fa-solid fa-chart-line me-2"></i>
     View Performance Graph
 </a>
 <br>
 
 
-<div class="row g-4 slide-up">
+<div class="row g-4 slide-up m-1">
     {% for quiz in quizzes %}
     <div class="col-md-6 col-lg-4">
         <div class="card custom-card h-100 border-0">

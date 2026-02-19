@@ -12,13 +12,13 @@ A lightweight Learning Management System (LMS) built with Python and Flask. This
 - **Grading**:
   - Automatic grading for MCQs.
   - Manual grading interface for Coding questions.
-- **Student History**: View detailed performance history for any student.
+- **Student History**: View detailed performance history with graphs for any student.
 - **Student List**: View all registered students.
 
 ### For Students 👨‍🎓
-- **Dashboard**: View available quizzes and past attempts.
+- **Dashboard**: View available quizzes and past attempts and performance report graph.
 - **Attempt Quizzes**: Interactive interface to take quizzes.
-- **View Results**: Detailed breakdown of results, including marks and correct answers (after grading).
+- **View Results**: Detailed breakdown of results, including marks and correct answers.
 
 ### Security 🔒
 - Secure Login and Registration system.
@@ -28,7 +28,7 @@ A lightweight Learning Management System (LMS) built with Python and Flask. This
 ## 🛠️ Tech Stack
 
 - **Backend**: [Flask](https://flask.palletsprojects.com/) (Python)
-- **Database**: [SQLAlchemy](https://www.sqlalchemy.org/) (ORM), SQLite (default)
+- **Database**: [PostgreSQL](https://console.neon.tech/)
 - **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5, Tailwind CSS
 - **Authentication**: Werkzeug Security
 
@@ -36,7 +36,7 @@ A lightweight Learning Management System (LMS) built with Python and Flask. This
 
 1.  **Clone the Repository**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/satyampatelmh/moodle
     cd moodle
     ```
 
@@ -59,7 +59,8 @@ A lightweight Learning Management System (LMS) built with Python and Flask. This
     Create a `.env` file in the root directory with the following content:
     ```env
     SECRET_KEY=your_secret_key_here
-    DATABASE_URL=sqlite:///moodle.db
+    DATABASE_URL=database_connection_string
+    API_KEY=gemini_api_key
     ```
 
 5.  **Run the Application**
@@ -73,23 +74,30 @@ A lightweight Learning Management System (LMS) built with Python and Flask. This
 
 ## 📂 Project Structure
 
-```
+```text
 moodle/
-├── main.py              # Application entry point and routes
-├── requirements.txt     # Python dependencies
-├── .env                 # Environment variables (not committed)
-├── static/              # CSS, JS, Images
+├── main.py
+├── requirements.txt
+├── .env
+├── static/
 │   └── css/
-├── templates/           # HTML Templates
-│   ├── index.html        # Landing page
-│   ├── login.html        # Login page
-│   ├── register.html     # Registration page
-│   ├── teacherDashboard.html
-│   ├── studentDashboard.html
-│   ├── makeQuiz.html     # Quiz creation
-│   ├── attemptQuiz.html  # Quiz taking
-│   └── ...
-└── instance/            # Database file (created at runtime)
+│       └── style.css
+└── templates/
+    ├── attemptQuiz.html
+    ├── base.html
+    ├── gradeQuiz.html
+    ├── gradeSubmission.html
+    ├── index.html
+    ├── login.html
+    ├── makeQuiz.html
+    ├── register.html
+    ├── studentDashboard.html
+    ├── studentHistory.html
+    ├── studentList.html
+    ├── studentPerformance.html
+    ├── studentSearch.html
+    ├── teacherDashboard.html
+    └── viewResult.html
 ```
 
 ## 📝 Usage
