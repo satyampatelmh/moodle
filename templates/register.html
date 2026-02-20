@@ -18,7 +18,9 @@
       </div>
       {% endif %}
 
-      <form action="{{ url_for('register') }}" method="POST">
+      <form action="{{ url_for('register') }}" method="POST" id="registerForm">
+        <div id="validationError" class="alert alert-danger d-none" role="alert"></div>
+
         <div class="mb-3">
           <label for="full_name" class="form-label fw-semibold">Full Name</label>
           <div class="input-group">
@@ -67,5 +69,52 @@
     </div>
   </div>
 </div>
+
+<script>
+  const form = document.getElementById("registerForm");
+  const username = document.getElementById("username");
+  const mobile = document.getElementById("mobile");
+  const email = document.getElementById("email");
+  const password = document.getElementById("password");
+  const errorBox = document.getElementById("validationError");
+
+  const usernameRegex = /^[A-Za-z]{3,}[A-Za-z0-9_]*$/;
+  const mobileRegex = /^\d{10}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+  form.addEventListener("submit", function (e) {
+    if (!usernameRegex.test(username.value.trim())) {
+      e.preventDefault();
+      errorBox.textContent = "Username must start with at least 3 alphabets. Numbers and underscore are allowed thereafter.";
+      errorBox.classList.remove("d-none");
+      return;
+    }
+
+    if (!emailRegex.test(email.value.trim())) {
+      e.preventDefault();
+      errorBox.textContent = "Please enter a valid email address.";
+      errorBox.classList.remove("d-none");
+      return;
+    }
+
+    if (!mobileRegex.test(mobile.value.trim())) {
+      e.preventDefault();
+      errorBox.textContent = "Phone number must be exactly 10 digits.";
+      errorBox.classList.remove("d-none");
+      return;
+    }
+
+    if (!passwordRegex.test(password.value)) {
+      e.preventDefault();
+      errorBox.textContent = "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
+      errorBox.classList.remove("d-none");
+      return;
+    }
+
+    errorBox.classList.add("d-none");
+    errorBox.textContent = "";
+  });
+</script>
 
 {% endblock %}
