@@ -22,11 +22,9 @@
                 </tr>
             </thead>
             <tbody>
-                {% set found_any = false %}
+                {% set ns = namespace(found_any=false) %}
                 {% for sub in submissions %}
-                {% for ans in sub.answers %}
-                {% if ans.question.question_type == "code" and not ans.is_graded %}
-                {% set found_any = true %}
+                {% set ns.found_any = true %}
                 <tr>
                     <td class="fw-medium">{{ sub.quiz.title }}</td>
                     <td><span class="badge bg-secondary">ID: {{ sub.student_id }}</span></td>
@@ -38,11 +36,9 @@
                         </a>
                     </td>
                 </tr>
-                {% endif %}
-                {% endfor %}
                 {% endfor %}
 
-                {% if not found_any %}
+                {% if not ns.found_any %}
                 <tr>
                     <td colspan="4" class="text-center py-5 text-muted">
                         <i class="fa-regular fa-folder-open fa-2x mb-3 d-block opacity-50"></i>
