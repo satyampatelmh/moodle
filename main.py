@@ -275,13 +275,15 @@ def submitQuiz(quiz_id):
             student_id=student_id,
             total_score=0
         )
+        
+        if not quiz.has_code_question:
+            submission.is_finalized = True
 
         db.session.add(submission)
         db.session.flush()  # get submission.id
 
         total_score = 0
         has_code = False
-
         for question in questions:
 
             # MCQ question
