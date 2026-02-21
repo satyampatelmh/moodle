@@ -444,6 +444,7 @@ def gradeQuiz():
 @app.route("/teacher/studentHistory", methods=["GET", "POST"])
 def studentHistory():
     if "username" in session and session["user_type"] == "teacher":
+        students = User.query.filter_by(user_type="student").all()
 
         if request.method == "POST":
 
@@ -509,7 +510,7 @@ def studentHistory():
                 graph_url=graph_url
             )
 
-        return render_template("studentSearch.html")
+        return render_template("studentSearch.html", students=students)
     
     return redirect(url_for('home'))
 
